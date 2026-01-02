@@ -18,11 +18,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('counters')->insert([
-            'value' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Only insert if the table is empty (idempotent)
+        if (DB::table('counters')->count() === 0) {
+            DB::table('counters')->insert([
+                'value' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 
     /**
